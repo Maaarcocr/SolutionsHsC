@@ -15,18 +15,14 @@ mod' a b
 divides:: Int -> Int -> Bool
 divides a b = if mod b a == 0 then True else False
 
-strictF:: Int -> [Int]
-strictF n = helper n n
-helper n 1 = [1]
-helper n t 
-	|divides t n = t:(helper n (t-1))
-	|otherwise = helper n (t-1)
-primesUpTo:: Int -> [Int]
-primesUpTo n 
-	|n < 2 = []
-	|n == 2 = [2]
-	|otherwise = if (myLength $ strictF n) == 2 then n:(primesUpTo (n-1)) else primesUpTo (n-1)
-	
+strictFactors :: Int -> [Int]
+strictFactors x = [ a | a <- [2..(x-1)] , a `divides` x]
+
+primesUpTo :: Int -> [Int]
+primesUpTo 2 = [2]
+primesUpTo x | strictFactors x == []    = x : (primesUpTo (x-1))
+             | otherwise                = primesUpTo (x-1)
+             
 primeList:: IO()
 primeList = do
 	putStrLn "Write a number"
