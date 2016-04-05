@@ -43,6 +43,10 @@ alphanums (x:xs)
 	|elem' x ".,;' " = alphanums xs
 	|otherwise = x:(alphanums xs)
 
+-- using list-compre.
+alphanums' :: [Char] -> [Char]
+alphanums' xs = [ x | x <- xs , (x `elem` ['a'..'z']) || (x `elem` ['A'..'Z']) ]
+
 foldr':: (a->b->b) -> b -> [a] -> b 
 foldr' _ e [] = e
 foldr' f e (x:xs) = f x (foldr' f e xs)
@@ -52,3 +56,7 @@ cube x = x*x*x
 
 mySum::Num a => [a] -> a
 mySum list = foldr (+) 0 (map cube list)
+
+-- without helper function
+mySum' :: Num a => [a] -> a
+mySum' xs = foldr (+) 0 $ map (\x -> x^3) xs
