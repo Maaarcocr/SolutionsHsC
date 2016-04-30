@@ -15,18 +15,14 @@ mod' a b
 divides:: Int -> Int -> Bool
 divides a b = if mod b a == 0 then True else False
 
-strictF:: Int -> [Int]
-strictF n = helper n n
-helper n 1 = [1]
-helper n t 
-	|divides t n = t:(helper n (t-1))
-	|otherwise = helper n (t-1)
-primesUpTo:: Int -> [Int]
-primesUpTo n 
-	|n < 2 = []
-	|n == 2 = [2]
-	|otherwise = if (myLength $ strictF n) == 2 then n:(primesUpTo (n-1)) else primesUpTo (n-1)
-	
+strictFactors :: Int -> [Int]
+strictFactors x = [ a | a <- [2..(x-1)] , a `divides` x]
+
+primesUpTo :: Int -> [Int]
+primesUpTo 2 = [2]
+primesUpTo x | strictFactors x == []    = x : (primesUpTo (x-1))
+             | otherwise                = primesUpTo (x-1)
+             
 primeList:: IO()
 primeList = do
 	putStrLn "Write a number"
@@ -43,6 +39,10 @@ alphanums (x:xs)
 	|elem' x ".,;' " = alphanums xs
 	|otherwise = x:(alphanums xs)
 
+-- using list-compre.
+alphanums' :: [Char] -> [Char]
+alphanums' xs = [ x | x <- xs , (x `elem` ['a'..'z']) || (x `elem` ['A'..'Z']) ]
+
 foldr':: (a->b->b) -> b -> [a] -> b 
 foldr' _ e [] = e
 foldr' f e (x:xs) = f x (foldr' f e xs)
@@ -52,3 +52,7 @@ cube x = x*x*x
 
 mySum::Num a => [a] -> a
 mySum list = foldr (+) 0 (map cube list)
+
+-- without helper function
+mySum' :: Num a => [a] -> a
+mySum' xs = foldr (+) 0 $ map (\x -> x^3) xs
